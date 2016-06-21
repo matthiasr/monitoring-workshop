@@ -1,6 +1,18 @@
 version: "2"
 
 services:
+  app0: &app
+    build: example_golang/
+    ports:
+    - 8080
+    networks:
+    - ws
+  app1:
+    <<: *app
+  app2:
+    <<: *app
+  app3:
+    <<: *app
   prometheus:
     image: prom/prometheus
     ports:
