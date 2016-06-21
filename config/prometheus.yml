@@ -35,9 +35,8 @@ scrape_configs:
       - cadvisor:8080
 
   - job_name: 'app'
-    static_configs:
-    - targets:
-      - app0:8080
-      - app1:8080
-      - app2:8080
-      - app3:8080
+    dns_sd_configs:
+    - names:
+      - app
+      type: A
+      port: 8080
