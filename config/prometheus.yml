@@ -33,3 +33,11 @@ scrape_configs:
     static_configs:
     - targets:
       - cadvisor:8080
+
+  - job_name: 'app'
+    static_configs:
+    - targets:
+      - app0:8080
+      - app1:8080
+      - app2:8080
+      - app3:8080
