@@ -17,7 +17,7 @@ EOF
 fi
 echo '---------------------------------------'
 
-for image in golang:1.6-onbuild prom/prometheus prom/alertmanager google/cadvisor grafana/grafana
+for image in golang:1.6-onbuild prom/prometheus:0.20.0 prom/alertmanager:0.2.0 google/cadvisor:v0.23.2 grafana/grafana:3.0.4
 do
   docker pull "${image}"
 done

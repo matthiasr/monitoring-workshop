@@ -14,7 +14,7 @@ services:
   app3:
     <<: *app
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:0.20.0
     ports:
     - '9090:9090'
     volumes:
@@ -23,7 +23,7 @@ services:
     networks:
     - ws
   cadvisor:
-    image: google/cadvisor
+    image: google/cadvisor:v0.23.2
     privileged: true
     ports:
     - 8080
@@ -35,7 +35,7 @@ services:
     networks:
     - ws
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:3.0.4
     restart: always
     ports:
     - 3000:3000
