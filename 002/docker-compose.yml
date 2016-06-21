@@ -1,0 +1,14 @@
+version: "2"
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+    - '9090:9090'
+    volumes:
+    - './config:/etc/prometheus'
+    - './storage:/prometheus'
+    networks:
+    - ws
+networks:
+  ws:
+    driver: bridge
