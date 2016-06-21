@@ -7,7 +7,7 @@ services:
     - '9090:9090'
     volumes:
     - './config:/etc/prometheus'
-    - './storage:/prometheus'
+    - './data/prometheus:/prometheus'
     networks:
     - ws
   cadvisor:
@@ -22,30 +22,11 @@ services:
     - "/var/lib/docker/:/var/lib/docker:ro"
     networks:
     - ws
-  mysql:
-    image: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: grafana
-      MYSQL_USER: grafana
-      MYSQL_PASSWORD: grafana
-    ports:
-    - '3306'
-    networks:
-    - ws
   grafana:
     image: grafana/grafana
     restart: always
     ports:
     - 3000:3000
-    environment:
-      GF_DATABASE_TYPE: mysql
-      GF_DATABASE_HOST: mysql:3306
-      GF_DATABASE_NAME: grafana
-      GF_DATABASE_USER: grafana
-      GF_DATABASE_PASSWORD: grafana
-      GF_SESSION_PROVIDER: mysql
-      GF_SESSION_PROVIDER_CONFIG: 'root:root@@tcp(mysql:3306)/grafana'
     networks:
     - ws
 
