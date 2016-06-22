@@ -52,7 +52,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99,sum by (le) (codelab_api_request_duration_seconds_bucket))",
+              "expr": "codelab_latency_quantile{quantile=\"0.99\"}",
               "intervalFactor": 2,
               "legendFormat": "99th percentile",
               "metric": "codelab_api_request_duration_seconds_bucket",
@@ -60,7 +60,7 @@
               "step": 2
             },
             {
-              "expr": "histogram_quantile(0.9,sum by (le) (codelab_api_request_duration_seconds_bucket))",
+              "expr": "codelab_latency_quantile{quantile=\"0.9\"}",
               "intervalFactor": 2,
               "legendFormat": "90th percentile",
               "metric": "codelab_api_request_duration_seconds_bucket",
@@ -68,7 +68,7 @@
               "step": 2
             },
             {
-              "expr": "histogram_quantile(0.5,sum by (le) (codelab_api_request_duration_seconds_bucket))",
+              "expr": "codelab_latency_quantile{quantile=\"0.5\"}",
               "intervalFactor": 2,
               "legendFormat": "median",
               "metric": "codelab_api_request_duration_seconds_bucket",
@@ -208,8 +208,8 @@
           "id": 2,
           "isNew": true,
           "legend": {
-            "alignAsTable": true,
-            "avg": true,
+            "alignAsTable": false,
+            "avg": false,
             "current": true,
             "hideEmpty": true,
             "hideZero": true,
@@ -218,7 +218,7 @@
             "show": true,
             "total": false,
             "values": true,
-            "rightSide": true
+            "rightSide": false
           },
           "lines": true,
           "linewidth": 0,
@@ -407,6 +407,6 @@
     "list": []
   },
   "schemaVersion": 12,
-  "version": 6,
+  "version": 8,
   "links": []
 }
