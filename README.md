@@ -17,7 +17,7 @@ For each part, you will check out the corresponding tag of this repository. Each
 
 To participate actively in this workshop, you will need to bring a laptop.
 
-To save time and the conference WiFi, please ensure that you have [Docker](https://docker.com) installed and run
+To save time and the conference WiFi, please ensure that you have [Docker](https://docker.com) and [Docker Compose](https://docs.docker.com/compose/) installed, then run
 
     ./prepare.sh
 
