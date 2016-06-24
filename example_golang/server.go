@@ -120,3 +120,29 @@ func handleAPI(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "Success! Method: %s, Path: %s", r.Method, r.URL.Path)
 }
+
+func handleIndex(w http.ResponseWriter, r *http.Request) {
+	begun := time.Now()
+	requestsInProgress.Inc()
+	status := http.StatusOK
+
+	defer func() {
+		requestsInProgress.Dec()
+		requestHistogram.With(prometheus.Labels{
+			"method": r.Method,
+			"path":   r.URL.Path,
+			"status": fmt.Sprint(status),
+		}).Observe(time.Since(begun).Seconds())
+	}()
+
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprintf(w, `
+<html>
+	<head><title>Example App</title></head>
+	<body>
+		<h1>Example App</h1>
+		<p>Head to <a href="/metrics">/metrics</a> for the metric page.</p>
+	</body>
+</html>
+	`)
+}

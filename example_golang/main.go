@@ -22,6 +22,7 @@ func main() {
 
 	http.HandleFunc("/api/", handleAPI)
 	http.Handle("/metrics", prometheus.Handler())
+	http.HandleFunc("/", handleIndex)
 
 	// Log every received HTTP request to stdout.
 	go http.ListenAndServe(*addr, alice.New(
