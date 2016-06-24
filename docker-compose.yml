@@ -4,7 +4,7 @@ services:
   app:
     build: example_golang/
     ports:
-    - 8080
+    - '8080:8080'
     networks:
     - ws
   prometheus:
@@ -20,7 +20,7 @@ services:
     image: google/cadvisor:v0.23.2
     privileged: true
     ports:
-    - 8080
+    - '8081:8080'
     volumes:
     - "/:/rootfs:ro"
     - "/var/run:/var/run:rw"
@@ -32,7 +32,7 @@ services:
     image: grafana/grafana:3.0.4
     restart: always
     ports:
-    - 3000:3000
+    - '3000:3000'
     networks:
     - ws
 
