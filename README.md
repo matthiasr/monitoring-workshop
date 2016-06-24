@@ -168,3 +168,25 @@ To calculate the quantile over all endpoints and methods, sum the rates but pres
     histogram_quantile(0.5,sum by(le) (rate(codelab_api_request_duration_seconds_bucket[1m])))
 
 Now try calculating the median latency across all endpoints, but separately by method.
+
+## Part 3: cAdvisor
+
+Not all the information about our app can be obtained from the app itself. cAdvisor collects information about the containers on a machine. Once again, check out the tag for this part and update our installation by executing
+
+    docker-compose up -d
+
+Also reload the Prometheus configuration:
+
+    docker-compose kill --signal=HUP prometheus
+
+Explore the metrics cAdvisor provides at <http://localhost:8081/metrics> or using the Prometheus query interface. For the purposes of this workshop, focus on the CPU utilization metrics.
+
+* Which metric captures the CPU usage of a container?
+* What does the number tell us? How do you transform it into the current utilisation?
+* What is the theoretical maximum a container can use on a given machine?
+
+## Part 4: Grafana
+
+## Part 5: Recording rules
+
+## Part 6: Alert rules
