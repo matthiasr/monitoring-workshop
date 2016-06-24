@@ -108,6 +108,15 @@ Play with the `1m` (change it to different values). Change `rate` to `irate` and
 
     rate(codelab_api_request_duration_seconds_count{method="GET"}[1m])
 
+The rate function deals with counter resets for you. Restart the application with
+
+    docker-compose restart app
+
+and observe the graphs for
+
+    codelab_api_request_duration_seconds_count
+    rate(codelab_api_request_duration_seconds_count[1m])
+
 ### Filtering by value
 
 To only look at time series with more than 10 requests per second:
