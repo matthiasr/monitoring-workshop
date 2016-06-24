@@ -134,3 +134,37 @@ Now, calculate the total request rate:
 Calculate the request rate _by method_:
 
     sum by (method) (rate(codelab_api_request_duration_seconds_count[1m]))
+
+### Calculation
+
+The `codelab_api_request_duration_seconds_sum` is a counter summing up the _time_ spent responding to requests, broken out by the same dimensions as the request count. Note that in Prometheus, "counters" are not necessarily integer-valued, but they are required to be monotonically increasing. A single request that takes 43ms will increase this counter by 0.043.
+
+We can use this to calculate the average time per request:
+
+    rate(codelab_api_request_duration_seconds_sum[1m]) / rate(codelab_api_request_duration_seconds_count[1m])
+
+Note how the labels are preserved and matched. What happens if you add a label restriction to one or both sides of the `/`? What happens if you add _different_ restrictions on both sides?
+
+Try calculating the relative error rate of the example app in percent.
+
+### Histograms
+
+The average response time is a bad measure for a web service. [Quantiles](https://en.wikipedia.org/Quantile) provide a better view of the user experience, but they have the disadvantage of being [impossible to aggregate](http://latencytipoftheday.blogspot.de/2014/06/latencytipoftheday-you-cant-average.html). Prometheus deals with this by recording _histograms_ of observed latencies, and calculates quantiles only _after_ aggregating them.
+
+Take a look at the query
+
+    codelab_api_request_duration_seconds_bucket{method="GET",path="/api/bar",status="200"}
+
+The buckets of the histogram are split up by the `le` label. The buckets are _cumulative_, so every bucket contains the number of requests that had a latency of less than or equal to the value of the label.
+
+To calculate the median response time, run the query
+
+    histogram_quantile(0.99,rate(codelab_api_request_duration_seconds_bucket{method="GET",path="/api/bar",status="200"}[1m]))
+
+For the 90th percentile, change 0.5 to 0.9, for the 99th percentile change it to 0.99.
+
+To calculate the quantile over all endpoints and methods, sum the rates but preserve the `le` label:
+
+    histogram_quantile(0.5,sum by(le) (rate(codelab_api_request_duration_seconds_bucket[1m])))
+
+Now try calculating the median latency across all endpoints, but separately by method.
