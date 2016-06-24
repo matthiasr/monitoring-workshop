@@ -189,6 +189,24 @@ cAdvisor is an example for [exporters](https://prometheus.io/docs/instrumenting/
 
 ## Part 4: Grafana
 
+[Grafana](http://grafana.org) is an application to build dashboards for many data sources. One available data source is Prometheus. After you have checked out the tag for this part, start Grafana by repeating
+
+    docker-compose up -d
+
+once more. It will then be available at <http://localhost:3000> (adjust for `docker-machine ip` if applicable). Log in with user `admin` and password `admin`.
+
+Add our Prometheus server as a data source: from the swirly main menu, select Data Sources, then click Add Data Source. Use the following settings:
+
+* Name: `prom1`
+* Default: checked
+* Type: `Prometheus`
+* Url: `http://prometheus:9090`
+* Access: `Proxy`
+* Basic Auth: unchecked
+* With Credentials: unchecked
+
+![Datasource edit screen](img/datasource.png)
+
 ## Part 5: Recording rules
 
 ## Part 6: Alert rules
