@@ -185,6 +185,8 @@ Explore the metrics cAdvisor provides at <http://localhost:8081/metrics> or usin
 * What does the number tell us? How do you transform it into the current utilisation?
 * What is the theoretical maximum a container can use on a given machine?
 
+cAdvisor is an example for [exporters](https://prometheus.io/docs/instrumenting/exporters/). Exporters are simple services that obtain metrics from systems that are not natively instrumented for Prometheus and expose them in the Prometheus exposition format.
+
 ## Part 4: Grafana
 
 ## Part 5: Recording rules
