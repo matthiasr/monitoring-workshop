@@ -77,3 +77,51 @@ After you have checked out the code for this part, update the setup by running
 again.
 
 This will start a Prometheus server. Look at [the configuration](config/prometheus.yml) to get an idea of the setup. Don't sweat over the details though – we don't want to bore you with the details of configuring Prometheus in particular.
+
+Again, keeping in mind the `docker-machine ip` if applicable, the Prometheus web interface is now available at <http://localhost:9090>.
+
+First, take a look at Status -> Targets. You will see that the "app" job currently has one "endpoint". This is the application container we started earlier.
+
+Head back to the Graph page. This is a simple query interface for interactively exploring Prometheus metrics. Enter `codelab_api_request_duration_seconds_count` into the text field or select this metric from the drop-down. Run the query.
+
+By default, the Graph page renders a tabular view of the current values for all label combinations in the query result. Click "Graph" to show the development over time.
+
+### Filtering with labels
+
+First, change the query to
+
+    codelab_api_request_duration_seconds_count{method="GET"}
+
+Then, exclude the index page by changing it to
+
+    codelab_api_request_duration_seconds_count{method="GET",path!="/"}
+
+How does the result list change?
+
+### Request rates
+
+Change the query to
+
+    rate(codelab_api_request_duration_seconds_count[1m])
+
+Play with the `1m` (change it to different values). Change `rate` to `irate` and play with the time again. Try the label filters from above:
+
+    rate(codelab_api_request_duration_seconds_count{method="GET"}[1m])
+
+### Filtering by value
+
+To only look at time series with more than 10 requests per second:
+
+    rate(codelab_api_request_duration_seconds_count[1m]) > 10
+
+What happens if you set the threshold higher? Lower?
+
+### Aggregation
+
+Now, calculate the total request rate:
+
+    sum (rate(codelab_api_request_duration_seconds_count[1m]))
+
+Calculate the request rate _by method_:
+
+    sum by (method) (rate(codelab_api_request_duration_seconds_count[1m]))
