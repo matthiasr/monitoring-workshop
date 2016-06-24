@@ -62,7 +62,18 @@ Look for the metric `codelab_api_request_duration_seconds_count{method="GET",pat
 Audience discussion:
 
 * What are the benefits of recording counts instead of request rates? (Hint: if a request happens while noone is measuring, did the request really happen?)
+* What happens if the application restarts?
 
 ### Label-value metrics model
 
-In Prometheus, all metrics have a _name_ and 0 or more _label-value-pairs_. In the metric above, the name is `codelab_api_request_duration_seconds_count`, and the labels are `method`, `path` and `status`.
+In Prometheus, all metrics have a _name_ and 0 or more _label-value-pairs_. In the metric above, the name is `codelab_api_request_duration_seconds_count`, and the labels are `method`, `path` and `status`. Additional metrics will be added by the Prometheus server when scraping, such as the address of the instance the metric was read from.
+
+## Part 2: Prometheus
+
+After you have checked out the code for this part, update the setup by running
+
+    docker-compose up -d
+
+again.
+
+This will start a Prometheus server. Look at [the configuration](config/prometheus.yml) to get an idea of the setup. Don't sweat over the details though – we don't want to bore you with the details of configuring Prometheus in particular.
