@@ -117,4 +117,6 @@ func handleAPI(w http.ResponseWriter, r *http.Request) {
 		status = http.StatusInternalServerError
 		http.Error(w, "Fake error to test monitoring.", status)
 	}
+
+	fmt.Fprintf(w, "Success! Method: %s, Path: %s", r.Method, r.URL.Path)
 }
