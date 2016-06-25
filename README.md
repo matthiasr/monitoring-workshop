@@ -197,6 +197,8 @@ cAdvisor is an example for [exporters](https://prometheus.io/docs/instrumenting/
 
 once more. It will then be available at <http://localhost:3000> (adjust for `docker-machine ip` if applicable). Log in with user `admin` and password `admin`.
 
+### Setting up the data source
+
 Add our Prometheus server as a data source: from the swirly main menu, select Data Sources, then click Add Data Source. Use the following settings:
 
 * Name: `prom1`
@@ -208,6 +210,30 @@ Add our Prometheus server as a data source: from the swirly main menu, select Da
 * With Credentials: unchecked
 
 ![Datasource edit screen](img/datasource.png)
+
+"Proxy" means that all requests to Prometheus are proxied through the Grafana server process, and not directly from the browser to Prometheus. Therefore, the URL specified uses the hostname valid within our Docker Compose ensemble.
+
+### Create a dashboard
+
+From the main menu, select Dashboards -> New. We will create a dashboard showing the _four golden signals_ as four panels in two rows.
+
+#### Latency
+
+The first of the Golden Signals is _latency_ – how long does it take to do whatever the thing to be monitored should be doing?
+
+In the first row, create a panel to show the median, 90th and 99th percentile of the overall latency of our example application. Use the queries from before.
+
+#### Traffic
+
+The next Golden Signal is _traffic_. Also in the first row, add a panel to show the applications request rate by method and endpoint as a stacked graph.
+
+#### Errors
+
+The third Golden Signal is _errors_. Create a new row, and add a panel showing the _relative error rate in percent_ by method and endpoint. Any status code from 500 to 599 is considered an error.
+
+#### Saturation
+
+The last Golden Signal is _saturation_ – how much of the available resources are used. Add another panel to the second row showing the _CPU utilization_ of each Docker Compose Service (`app`, `prometheus`, `cadvisor`, `grafana`. Also add a line for the _maximum_ utilization depending on the available resources.
 
 ## Part 5: Recording rules
 
