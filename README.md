@@ -38,9 +38,9 @@ and find out the port it is exposed on with
 The output should look like
 
     CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS              PORTS                     NAMES
-    dc167f6ee1b6        monitoringworkshop_app    "go-wrapper run"         7 seconds ago       Up 6 seconds        0.0.0.0:8080->8080/tcp   monitoringworkshop_app_1
+    dc167f6ee1b6        monitoringworkshop_app    "go-wrapper run"         7 seconds ago       Up 6 seconds        0.0.0.0:32895->8080/tcp   monitoringworkshop_app_1
 
-From this you can see that the application is exposed at port 8080 of the machine running Docker. The IP depends on the variant of Docker you are running. For Docker Toolbox, run `docker-machine ip` and note the IP; in everything that follows substitute this IP for "localhost". For Docker For Mac or on native Linux, the IP is 127.0.0.1. Open <http://localhost:8080> in your browser. Follow the link to the metric page to see the metrics the application is currently exposing.
+From this you can see that the application is exposed at port 32895 of the machine running Docker. This port will be different for ever new app container. The IP depends on the variant of Docker you are running. For Docker Toolbox, run `docker-machine ip` and note the IP; in everything that follows substitute this IP for "localhost". For Docker For Mac or on native Linux, the IP is 127.0.0.1. Open <http://${ip}:${port}> in your browser. Follow the link to the metric page to see the metrics the application is currently exposing.
 
 ### Push vs. Pull
 
@@ -179,7 +179,9 @@ Also reload the Prometheus configuration:
 
     docker-compose kill -s HUP prometheus
 
-Explore the metrics cAdvisor provides at <http://localhost:8081/metrics> or using the Prometheus query interface. For the purposes of this workshop, focus on the CPU utilization metrics.
+Find out the port cAdvisor is exposed on using `docker ps` like with the [app](#part-1-an-app) earlier.
+
+Explore the metrics cAdvisor provides at <http://${ip}:${port}/metrics> or using the Prometheus query interface. For the purposes of this workshop, focus on the CPU utilization metrics.
 
 * Which metric captures the CPU usage of a container?
 * What does the number tell us? How do you transform it into the current utilisation?
