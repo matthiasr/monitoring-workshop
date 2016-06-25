@@ -1,1 +1,10 @@
 job_method_path:codelab_api_request_duration_seconds_count:rate = sum by (job, method,path) (rate(codelab_api_request_duration_seconds_count[15s]))
+
+job:codelab_api_request_duration_seconds_bucket:histogram_quantile{quantile="0.5"} = histogram_quantile(0.5,sum by (job,le) (codelab_api_request_duration_seconds_bucket))
+job:codelab_api_request_duration_seconds_bucket:histogram_quantile{quantile="0.9"} = histogram_quantile(0.9,sum by (job,le) (codelab_api_request_duration_seconds_bucket))
+job:codelab_api_request_duration_seconds_bucket:histogram_quantile{quantile="0.99"} = histogram_quantile(0.99,sum by (job,le) (codelab_api_request_duration_seconds_bucket))
+
+job_status_method_path:codelab_api_request_duration_seconds_count:rate_fraction = sum by (job,status,method,path) (rate(codelab_api_request_duration_seconds_count{status=~"5.."}[15s])) / on(job,method,path) ( sum by (job,method,path) (rate(codelab_api_request_duration_seconds_count[15s])) )
+
+job_service:container_cpu_usage_seconds_total:rate = sum by (job,com_docker_compose_service) (rate(container_cpu_usage_seconds_total{id!="/",id!="/docker"}[15s]))
+job:container_cpu:count = count by (job) (container_cpu_usage_seconds_total{id="/"})
