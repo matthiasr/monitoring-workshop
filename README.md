@@ -169,6 +169,16 @@ To calculate the quantile over all endpoints and methods, sum the rates but pres
 
 Now try calculating the median latency across all endpoints, but separately by method.
 
+### Scaling and service-based monitoring
+
+So far, there has been only a single instance of our app running. However, the label-based approach of Prometheus is especially useful when there are many, potentially varying, copies of an application running.
+
+Scale up the app with
+
+    docker-compose scale app=4
+
+and repeat the queries from above. What is different about the results? Which queries do you need to change to capture the whole app, and how?
+
 ## Part 3: cAdvisor
 
 Not all the information about our app can be obtained from the app itself. cAdvisor collects information about the containers on a machine. Once again, check out the tag for this part and update our installation by executing
