@@ -52,28 +52,28 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "codelab_latency_quantile{quantile=\"0.99\"}",
+              "expr": "histogram_quantile(0.99, sum(codelab_api_request_duration_seconds_bucket) BY (le))",
               "intervalFactor": 2,
               "legendFormat": "99th percentile",
               "metric": "codelab_api_request_duration_seconds_bucket",
               "refId": "A",
-              "step": 2
+              "step": 4
             },
             {
-              "expr": "codelab_latency_quantile{quantile=\"0.9\"}",
+              "expr": "histogram_quantile(0.9, sum(codelab_api_request_duration_seconds_bucket) BY (le))",
               "intervalFactor": 2,
               "legendFormat": "90th percentile",
               "metric": "codelab_api_request_duration_seconds_bucket",
               "refId": "B",
-              "step": 2
+              "step": 4
             },
             {
-              "expr": "codelab_latency_quantile{quantile=\"0.5\"}",
+              "expr": "histogram_quantile(0.5, sum(codelab_api_request_duration_seconds_bucket) BY (le))",
               "intervalFactor": 2,
               "legendFormat": "median",
               "metric": "codelab_api_request_duration_seconds_bucket",
               "refId": "C",
-              "step": 2
+              "step": 4
             }
           ],
           "timeFrom": null,
@@ -150,7 +150,7 @@
               "legendFormat": "{{method}} {{path}}",
               "metric": "codelab_api_request_duration_seconds_count",
               "refId": "A",
-              "step": 2
+              "step": 4
             }
           ],
           "timeFrom": null,
@@ -167,7 +167,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "rps",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -196,6 +196,7 @@
           "aliasColors": {},
           "bars": false,
           "datasource": null,
+          "decimals": 1,
           "editable": true,
           "error": false,
           "fill": 10,
@@ -215,10 +216,10 @@
             "hideZero": true,
             "max": true,
             "min": false,
+            "rightSide": false,
             "show": true,
             "total": false,
-            "values": true,
-            "rightSide": false
+            "values": true
           },
           "lines": true,
           "linewidth": 0,
@@ -239,7 +240,7 @@
               "legendFormat": "{{method}} {{path}}",
               "metric": "codelab_api_request_duration_seconds_count",
               "refId": "A",
-              "step": 2
+              "step": 4
             }
           ],
           "timeFrom": null,
@@ -271,8 +272,7 @@
               "min": null,
               "show": true
             }
-          ],
-          "decimals": 1
+          ]
         },
         {
           "aliasColors": {},
@@ -309,8 +309,8 @@
           "seriesOverrides": [
             {
               "alias": "max",
-              "lines": true,
               "fill": 0,
+              "lines": true,
               "linewidth": 1
             }
           ],
@@ -320,20 +320,20 @@
           "targets": [
             {
               "expr": "sum by (com_docker_compose_service) (irate(container_cpu_usage_seconds_total{id!=\"/\",id!=\"/docker\"}[1m]))",
+              "hide": false,
               "intervalFactor": 2,
+              "legendFormat": "{{com_docker_compose_service}}",
               "metric": "container_cpu_usage_seconds_total",
               "refId": "A",
-              "step": 2,
-              "legendFormat": "{{com_docker_compose_service}}",
-              "hide": false
+              "step": 4
             },
             {
               "expr": "count (container_cpu_usage_seconds_total{id=\"/\"}) - sum(irate(container_cpu_usage_seconds_total{id!=\"/\",id!=\"/docker\"}[1m]))",
-              "intervalFactor": 2,
-              "refId": "B",
-              "step": 2,
               "hide": false,
-              "legendFormat": "max"
+              "intervalFactor": 2,
+              "legendFormat": "max",
+              "refId": "B",
+              "step": 4
             }
           ],
           "timeFrom": null,
@@ -350,7 +350,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "percentunit",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -372,7 +372,7 @@
     }
   ],
   "time": {
-    "from": "now-15m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -407,6 +407,6 @@
     "list": []
   },
   "schemaVersion": 12,
-  "version": 8,
+  "version": 1,
   "links": []
 }
