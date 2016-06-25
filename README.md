@@ -296,4 +296,20 @@ Display: Lines, fill 10, width 0; null as zero; series specific override: "max" 
 
 ## Part 5: Recording rules
 
+Save the whole dashboard and reload it. You will notice that loading the graphs is quite slow – the more slow, the more we scale up the application. At the moment, all computation is done on-the-fly whenever a query is executed. This is somewhat computationally expensive, but more importantly it often requires loading dozens or hundreds of timeseries to distill a much smaller result. Recording rules are Prometheus' solution to this problem.
+
+A recording rule is a query expression that is constantly evaluated, and its result is stored as a new time series.
+
+After checking out the code for this part, reload Prometheus:
+
+    docker-compose kill -s HUP prometheus
+
+As you can see in [the config directory](config/) we have added a _rules file_ to the configuration. The file already contains rules to pre-calculate the traffic dashboard panel.
+
+By convention, the name of the recorded metric (the left hand side of the rule) has the form `<preserved labels>:<original metric>:<calculations performed>`. Also by convention, we preserve _at least_ the job label. This avoids some ambiguities in complexer environments. Both conventions are just that – the name of the metric is arbitrary (within Prometheus' limits for metric names). Labels of the result of the right hand side become labels of the recorded time series.
+
+Change the traffic panel to use this metric by replacing the previous query with `job_method_path:codelab_api_request_duration_seconds_count:rate`. Note that it now loads much faster, but the data only starts at the time when we loaded the metric.
+
+Now, create recording rules for all the other dashboard metrics. Add them to [the rules file](config/app.rules) and reload Prometheus. Then change the dashboard to only use these rules.
+
 ## Part 6: Alert rules
