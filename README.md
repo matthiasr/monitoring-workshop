@@ -102,11 +102,11 @@ How does the result list change?
 
 Change the query to
 
-    rate(codelab_api_request_duration_seconds_count[1m])
+    rate(codelab_api_request_duration_seconds_count[15s])
 
-Play with the `1m` (change it to different values). Change `rate` to `irate` and play with the time again. Try the label filters from above:
+Play with the `15s` (change it to different values). Change `rate` to `irate` and play with the time again. Try the label filters from above:
 
-    rate(codelab_api_request_duration_seconds_count{method="GET"}[1m])
+    rate(codelab_api_request_duration_seconds_count{method="GET"}[15s])
 
 The rate function deals with counter resets for you. Restart the application with
 
@@ -115,13 +115,13 @@ The rate function deals with counter resets for you. Restart the application wit
 and observe the graphs for
 
     codelab_api_request_duration_seconds_count
-    rate(codelab_api_request_duration_seconds_count[1m])
+    rate(codelab_api_request_duration_seconds_count[15s])
 
 ### Filtering by value
 
 To only look at time series with more than 10 requests per second:
 
-    rate(codelab_api_request_duration_seconds_count[1m]) > 10
+    rate(codelab_api_request_duration_seconds_count[15s]) > 10
 
 What happens if you set the threshold higher? Lower?
 
@@ -129,11 +129,11 @@ What happens if you set the threshold higher? Lower?
 
 Now, calculate the total request rate:
 
-    sum (rate(codelab_api_request_duration_seconds_count[1m]))
+    sum (rate(codelab_api_request_duration_seconds_count[15s]))
 
 Calculate the request rate _by method_:
 
-    sum by (method) (rate(codelab_api_request_duration_seconds_count[1m]))
+    sum by (method) (rate(codelab_api_request_duration_seconds_count[15s]))
 
 ### Calculation
 
@@ -141,7 +141,7 @@ The `codelab_api_request_duration_seconds_sum` is a counter summing up the _time
 
 We can use this to calculate the average time per request:
 
-    rate(codelab_api_request_duration_seconds_sum[1m]) / rate(codelab_api_request_duration_seconds_count[1m])
+    rate(codelab_api_request_duration_seconds_sum[15s]) / rate(codelab_api_request_duration_seconds_count[15s])
 
 Note how the labels are preserved and matched. What happens if you add a label restriction to one or both sides of the `/`? What happens if you add _different_ restrictions on both sides?
 
@@ -159,13 +159,13 @@ The buckets of the histogram are split up by the `le` label. The buckets are _cu
 
 To calculate the median response time, run the query
 
-    histogram_quantile(0.99,rate(codelab_api_request_duration_seconds_bucket{method="GET",path="/api/bar",status="200"}[1m]))
+    histogram_quantile(0.99,rate(codelab_api_request_duration_seconds_bucket{method="GET",path="/api/bar",status="200"}[15s]))
 
 For the 90th percentile, change 0.5 to 0.9, for the 99th percentile change it to 0.99.
 
 To calculate the quantile over all endpoints and methods, sum the rates but preserve the `le` label:
 
-    histogram_quantile(0.5,sum by(le) (rate(codelab_api_request_duration_seconds_bucket[1m])))
+    histogram_quantile(0.5,sum by(le) (rate(codelab_api_request_duration_seconds_bucket[15s])))
 
 Now try calculating the median latency across all endpoints, but separately by method.
 
@@ -253,7 +253,7 @@ The next Golden Signal is _traffic_. Also in the first row, add a panel to show 
 
 ##### Solution
 
-Metrics: `sum by (method,path) (irate(codelab_api_request_duration_seconds_count[1m]))`, legend format: `{{method}} {{path}}`
+Metrics: `sum by (method,path) (rate(codelab_api_request_duration_seconds_count[15s]))`, legend format: `{{method}} {{path}}`
 
 Axes: left Y: Unit rps, linear
 
@@ -267,7 +267,7 @@ The third Golden Signal is _errors_. Create a new row, and add a panel showing t
 
 ##### Solution
 
-Metrics: `sum by (status,method,path) (irate(codelab_api_request_duration_seconds_count{status=~"5.."}[1m])) / on(method,path) ( sum by (method,path) (irate(codelab_api_request_duration_seconds_count[1m])) )`, legend format: `{{method}} {{path}}`
+Metrics: `sum by (status,method,path) (rate(codelab_api_request_duration_seconds_count{status=~"5.."}[15s])) / on(method,path) ( sum by (method,path) (rate(codelab_api_request_duration_seconds_count[15s])) )`, legend format: `{{method}} {{path}}`
 
 Axes: left Y: Unit Percent (0.0-1.0)
 
@@ -283,8 +283,8 @@ The last Golden Signal is _saturation_ – how much of the available resources a
 
 Metrics:
 
-1. `sum by (com_docker_compose_service) (irate(container_cpu_usage_seconds_total{id!="/",id!="/docker"}[1m]))`, legend format: `{{com_docker_compose_service}}`
-2. `count (container_cpu_usage_seconds_total{id="/"}) - sum(irate(container_cpu_usage_seconds_total{id!="/",id!="/docker"}[1m]))`, legend format: `max`
+1. `sum by (com_docker_compose_service) (rate(container_cpu_usage_seconds_total{id!="/",id!="/docker"}[15s]))`, legend format: `{{com_docker_compose_service}}`
+2. `count (container_cpu_usage_seconds_total{id="/"}) - sum(rate(container_cpu_usage_seconds_total{id!="/",id!="/docker"}[15s]))`, legend format: `max`
 
 note that we subtract the total value of the first query from the number of cores – this allows us to stack the graphs and retain the constant max.
 

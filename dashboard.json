@@ -145,7 +145,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum by (method,path) (irate(codelab_api_request_duration_seconds_count[1m]))",
+              "expr": "sum by (method,path) (rate(codelab_api_request_duration_seconds_count[15s]))",
               "intervalFactor": 2,
               "legendFormat": "{{method}} {{path}}",
               "metric": "codelab_api_request_duration_seconds_count",
@@ -235,7 +235,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum by (status,method,path) (irate(codelab_api_request_duration_seconds_count{status=~\"5..\"}[1m])) / on(method,path) ( sum by (method,path) (irate(codelab_api_request_duration_seconds_count[1m])) )",
+              "expr": "sum by (status,method,path) (rate(codelab_api_request_duration_seconds_count{status=~\"5..\"}[15s])) / on(method,path) ( sum by (method,path) (rate(codelab_api_request_duration_seconds_count[15s])) )",
               "intervalFactor": 2,
               "legendFormat": "{{method}} {{path}}",
               "metric": "codelab_api_request_duration_seconds_count",
@@ -319,7 +319,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum by (com_docker_compose_service) (irate(container_cpu_usage_seconds_total{id!=\"/\",id!=\"/docker\"}[1m]))",
+              "expr": "sum by (com_docker_compose_service) (rate(container_cpu_usage_seconds_total{id!=\"/\",id!=\"/docker\"}[15s]))",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "{{com_docker_compose_service}}",
@@ -328,7 +328,7 @@
               "step": 4
             },
             {
-              "expr": "count (container_cpu_usage_seconds_total{id=\"/\"}) - sum(irate(container_cpu_usage_seconds_total{id!=\"/\",id!=\"/docker\"}[1m]))",
+              "expr": "count (container_cpu_usage_seconds_total{id=\"/\"}) - sum(rate(container_cpu_usage_seconds_total{id!=\"/\",id!=\"/docker\"}[15s]))",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "max",
@@ -407,6 +407,6 @@
     "list": []
   },
   "schemaVersion": 12,
-  "version": 1,
+  "version": 2,
   "links": []
 }
