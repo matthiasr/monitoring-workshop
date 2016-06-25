@@ -52,7 +52,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(codelab_api_request_duration_seconds_bucket) BY (le))",
+              "expr": "job:codelab_api_request_duration_seconds_bucket:histogram_quantile{quantile=\"0.99\"}",
               "intervalFactor": 2,
               "legendFormat": "99th percentile",
               "metric": "codelab_api_request_duration_seconds_bucket",
@@ -60,7 +60,7 @@
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.9, sum(codelab_api_request_duration_seconds_bucket) BY (le))",
+              "expr": "job:codelab_api_request_duration_seconds_bucket:histogram_quantile{quantile=\"0.9\"}",
               "intervalFactor": 2,
               "legendFormat": "90th percentile",
               "metric": "codelab_api_request_duration_seconds_bucket",
@@ -68,7 +68,7 @@
               "step": 4
             },
             {
-              "expr": "histogram_quantile(0.5, sum(codelab_api_request_duration_seconds_bucket) BY (le))",
+              "expr": "job:codelab_api_request_duration_seconds_bucket:histogram_quantile{quantile=\"0.5\"}",
               "intervalFactor": 2,
               "legendFormat": "median",
               "metric": "codelab_api_request_duration_seconds_bucket",
@@ -145,7 +145,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum by (method,path) (rate(codelab_api_request_duration_seconds_count[15s]))",
+              "expr": "job_method_path:codelab_api_request_duration_seconds_count:rate",
               "intervalFactor": 2,
               "legendFormat": "{{method}} {{path}}",
               "metric": "codelab_api_request_duration_seconds_count",
@@ -235,7 +235,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum by (status,method,path) (rate(codelab_api_request_duration_seconds_count{status=~\"5..\"}[15s])) / on(method,path) ( sum by (method,path) (rate(codelab_api_request_duration_seconds_count[15s])) )",
+              "expr": "job_status_method_path:codelab_api_request_duration_seconds_count:rate_fraction",
               "intervalFactor": 2,
               "legendFormat": "{{method}} {{path}}",
               "metric": "codelab_api_request_duration_seconds_count",
@@ -319,7 +319,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum by (com_docker_compose_service) (rate(container_cpu_usage_seconds_total{id!=\"/\",id!=\"/docker\"}[15s]))",
+              "expr": "job_service:container_cpu_usage_seconds_total:rate",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "{{com_docker_compose_service}}",
@@ -328,7 +328,7 @@
               "step": 4
             },
             {
-              "expr": "count (container_cpu_usage_seconds_total{id=\"/\"}) - sum(rate(container_cpu_usage_seconds_total{id!=\"/\",id!=\"/docker\"}[15s]))",
+              "expr": "job:container_cpu:count - sum by (job) (job_service:container_cpu_usage_seconds_total:rate)",
               "hide": false,
               "intervalFactor": 2,
               "legendFormat": "max",
@@ -407,6 +407,6 @@
     "list": []
   },
   "schemaVersion": 12,
-  "version": 2,
+  "version": 4,
   "links": []
 }
