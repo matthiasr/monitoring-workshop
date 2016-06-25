@@ -177,7 +177,7 @@ Not all the information about our app can be obtained from the app itself. cAdvi
 
 Also reload the Prometheus configuration:
 
-    docker-compose kill --signal=HUP prometheus
+    docker-compose kill -s HUP prometheus
 
 Explore the metrics cAdvisor provides at <http://localhost:8081/metrics> or using the Prometheus query interface. For the purposes of this workshop, focus on the CPU utilization metrics.
 
