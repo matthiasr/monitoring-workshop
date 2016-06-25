@@ -1,3 +1,1 @@
-codelab_latency_quantile{quantile="0.5"} = histogram_quantile(0.5,sum by (le) (codelab_api_request_duration_seconds_bucket))
-codelab_latency_quantile{quantile="0.9"} = histogram_quantile(0.9,sum by (le) (codelab_api_request_duration_seconds_bucket))
-codelab_latency_quantile{quantile="0.99"} = histogram_quantile(0.99,sum by (le) (codelab_api_request_duration_seconds_bucket))
+job_method_path:codelab_api_request_duration_seconds_count:rate = sum by (job, method,path) (rate(codelab_api_request_duration_seconds_count[15s]))
