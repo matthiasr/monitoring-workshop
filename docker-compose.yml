@@ -35,6 +35,15 @@ services:
     - 3000:3000
     networks:
     - ws
+  alertmanager:
+    image: prom/alertmanager:0.2.1
+    volumes:
+    - './data/alertmanager:/alertmanager'
+    - './config/alertmanager.yml:/etc/alertmanager/config.yml'
+    ports:
+    - 9093:9093
+    networks:
+    - ws
 
 networks:
   ws:
