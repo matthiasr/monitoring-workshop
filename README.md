@@ -79,3 +79,120 @@ Run
     git checkout part02
 
 to continue.
+
+## Part 2: Prometheus
+
+After you have checked out the code for this part, update the setup by running
+
+    docker-compose up -d
+
+again.
+
+This will start a Prometheus server. Look at [the configuration](config/prometheus.yml) to get an idea of the setup. Don't sweat over the details though – we don't want to bore you with the details of configuring Prometheus in particular.
+
+Again, keeping in mind the `docker-machine ip` if applicable, the Prometheus web interface is now available at <http://localhost:9090>.
+
+First, take a look at Status -> Targets. You will see that the "app" job currently has one "endpoint". This is the application container we started earlier.
+
+Head back to the Graph page. This is a simple query interface for interactively exploring Prometheus metrics. Enter `codelab_api_request_duration_seconds_count` into the text field or select this metric from the drop-down. Run the query.
+
+By default, the Graph page renders a tabular view of the current values for all label combinations in the query result. Click "Graph" to show the development over time.
+
+### Filtering with labels
+
+First, change the query to
+
+    codelab_api_request_duration_seconds_count{method="GET"}
+
+Then, exclude the index page by changing it to
+
+    codelab_api_request_duration_seconds_count{method="GET",path!="/"}
+
+How does the result list change?
+
+### Request rates
+
+Change the query to
+
+    rate(codelab_api_request_duration_seconds_count[15s])
+
+Play with the `15s` (change it to different values). Change `rate` to `irate` and play with the time again. Try the label filters from above:
+
+    rate(codelab_api_request_duration_seconds_count{method="GET"}[15s])
+
+The rate function deals with counter resets for you. Restart the application with
+
+    docker-compose restart app
+
+and observe the graphs for
+
+    codelab_api_request_duration_seconds_count
+    rate(codelab_api_request_duration_seconds_count[15s])
+
+### Filtering by value
+
+To only look at time series with more than 10 requests per second:
+
+    rate(codelab_api_request_duration_seconds_count[15s]) > 10
+
+What happens if you set the threshold higher? Lower?
+
+### Aggregation
+
+Now, calculate the total request rate:
+
+    sum (rate(codelab_api_request_duration_seconds_count[15s]))
+
+Calculate the request rate _by method_:
+
+    sum by (method) (rate(codelab_api_request_duration_seconds_count[15s]))
+
+### Calculation
+
+The `codelab_api_request_duration_seconds_sum` is a counter summing up the _time_ spent responding to requests, broken out by the same dimensions as the request count. Note that in Prometheus, "counters" are not necessarily integer-valued, but they are required to be monotonically increasing. A single request that takes 43ms will increase this counter by 0.043.
+
+We can use this to calculate the average time per request:
+
+    rate(codelab_api_request_duration_seconds_sum[15s]) / rate(codelab_api_request_duration_seconds_count[15s])
+
+Note how the labels are preserved and matched. What happens if you add a label restriction to one or both sides of the `/`? What happens if you add _different_ restrictions on both sides?
+
+Try calculating the relative error rate of the example app in percent.
+
+### Histograms
+
+The average response time is a bad measure for a web service. [Quantiles](https://en.wikipedia.org/Quantile) provide a better view of the user experience, but they have the disadvantage of being [impossible to aggregate](http://latencytipoftheday.blogspot.de/2014/06/latencytipoftheday-you-cant-average.html). Prometheus deals with this by recording _histograms_ of observed latencies, and calculates quantiles only _after_ aggregating them.
+
+Take a look at the query
+
+    codelab_api_request_duration_seconds_bucket{method="GET",path="/api/bar",status="200"}
+
+The buckets of the histogram are split up by the `le` label. The buckets are _cumulative_, so every bucket contains the number of requests that had a latency of less than or equal to the value of the label.
+
+To calculate the median response time, run the query
+
+    histogram_quantile(0.99,rate(codelab_api_request_duration_seconds_bucket{method="GET",path="/api/bar",status="200"}[15s]))
+
+For the 90th percentile, change 0.5 to 0.9, for the 99th percentile change it to 0.99.
+
+To calculate the quantile over all endpoints and methods, sum the rates but preserve the `le` label:
+
+    histogram_quantile(0.5,sum by(le) (rate(codelab_api_request_duration_seconds_bucket[15s])))
+
+Now try calculating the median latency across all endpoints, but separately by method.
+
+### Scaling and service-based monitoring
+
+So far, there has been only a single instance of our app running. However, the label-based approach of Prometheus is especially useful when there are many, potentially varying, copies of an application running.
+
+Scale up the app with
+
+    docker-compose scale app=4
+
+and repeat the queries from above. What is different about the results? Which queries do you need to change to capture the whole app, and how?
+
+Run
+
+    git checkout part03
+
+to continue.

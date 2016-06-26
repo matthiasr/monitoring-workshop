@@ -7,6 +7,21 @@ services:
     - 8080
     networks:
     - ws
+  prometheus:
+    image: prom/prometheus:0.20.0
+    command:
+    - "-config.file=/etc/prometheus/prometheus.yml"
+    - "-storage.local.path=/prometheus"
+    - "-web.console.libraries=/etc/prometheus/console_libraries"
+    - "-web.console.templates=/etc/prometheus/consoles"
+    - "-alertmanager.url=http://alertmanager:9093"
+    ports:
+    - '9090:9090'
+    volumes:
+    - './config:/etc/prometheus'
+    - './data/prometheus:/prometheus'
+    networks:
+    - ws
 
 networks:
   ws:
