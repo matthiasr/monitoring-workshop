@@ -357,3 +357,11 @@ and it will have a higher latency for a while.
 Alerts (especially of the crtitical variety) should indicate a _user facing_ problem (who the user is depends on the context – it may be other teams in your organization). For example, _high load_ is not a page-worthy condition – as long as your service is still performing to the expectations of its users. However, when investigating increased latency, knowing that there is also high load may be valuable.
 
 What should the severity of your latency and CPU utilisation alerts be?
+
+## Part 7: Alertmanager
+
+Alerts are useless unless they are being sent out. For Prometheus, this is handled by a separate process, the _Alertmanager_. It groups and bundles alerts, handles silencing, and routes the alert based on its labels to one or more receivers. Check out the tag for this chapter and start Alertmanager with
+
+    docker-compose up -d
+
+You can reach Alertmanager at port 9093 of your Docker IP. If your alerts are currently firing, they will show up on the Alerts page.
