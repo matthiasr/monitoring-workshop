@@ -403,3 +403,35 @@ Run
     git checkout part07
 
 to continue.
+
+## Part 7: Alertmanager
+
+Alerts are useless unless they are being sent out. For Prometheus, this is handled by a separate process, the _Alertmanager_. It groups and bundles alerts, handles silencing, and routes the alert based on its labels to one or more receivers. Check out the tag for this chapter and start Alertmanager with
+
+    docker-compose up -d
+
+You can reach Alertmanager at port 9093 of your Docker IP. If your alerts are currently firing, they will show up on the Alerts page.
+
+![Example alerts in Alertmanager](img/alerts_alertmanager.png)
+
+### Silencing
+
+Silencing alerts is essential to keeping alert noise low. Alertmanager silences by label combination. Silences act like filters on alerts: any alert that matches a current silence will be shown on the Alertmanager interface, but no notifications about it will be sent out.
+
+Click the "Silence" button on any alert to see all the labels of this alert pre-filled. Remove labels until all alerts of the same type are being silenced.
+
+![Adding a silence for a specific alert class](img/silence_alertname.png)
+
+Add another silence for all alerts related to `/api/foo`.
+
+![Adding a silence for all alerts about a specific path](img/silence_endpoint.png)
+
+### Add your own receiver
+
+Edit [the Alertmanager configuration](config/alertmanager.yml) to add your own receiver and route alerts to it. See [the Alertmanager documentation](https://prometheus.io/docs/alerting/configuration/) for details.
+
+Run
+
+    git checkout part08
+
+to continue.
