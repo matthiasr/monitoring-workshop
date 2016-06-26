@@ -8,3 +8,16 @@ job_status_method_path:codelab_api_request_duration_seconds_count:rate_fraction 
 
 job_service:container_cpu_usage_seconds_total:rate = sum by (job,com_docker_compose_service) (rate(container_cpu_usage_seconds_total{id!="/",id!="/docker"}[15s]))
 job:container_cpu:count = count by (job) (container_cpu_usage_seconds_total{id="/"})
+
+ALERT EndpointHighErrorRate
+  IF (
+        sum(rate(codelab_api_request_duration_seconds_count{status=~"5.."}[15s])) BY (job, status, method, path)
+      /ON(job, method, path)
+        (sum(rate(codelab_api_request_duration_seconds_count[15s])) BY (job, method, path))
+      )*100 > 10
+  LABELS {
+    severity = "critical",
+  }
+  ANNOTATIONS {
+    description = "The error rate is {{ $value }}% on {{ $labels.method }} {{ $labels.path }}"
+  }
