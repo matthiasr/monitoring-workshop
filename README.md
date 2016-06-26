@@ -28,3 +28,54 @@ Run
     git checkout part01
 
 to continue.
+
+## Part 1: An App
+
+The [example application](example_golang/) is a Go application that simulates a web service. It opens an HTTP port with a simple API. It also generates load against this API by sending additional requests.
+
+Start the app with
+
+    docker-compose up -d
+
+and find out the port it is exposed on with
+
+    docker ps
+
+The output should look like
+
+    CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS              PORTS                     NAMES
+    dc167f6ee1b6        monitoringworkshop_app    "go-wrapper run"         7 seconds ago       Up 6 seconds        0.0.0.0:32895->8080/tcp   monitoringworkshop_app_1
+
+From this you can see that the application is exposed at port 32895 of the machine running Docker. This port will be different for ever new app container. The IP depends on the variant of Docker you are running. For Docker Toolbox, run `docker-machine ip` and note the IP; in everything that follows substitute this IP for "localhost". For Docker For Mac or on native Linux, the IP is 127.0.0.1. Open <http://${ip}:${port}> in your browser. Follow the link to the metric page to see the metrics the application is currently exposing.
+
+### Push vs. Pull
+
+Prometheus follows the _pull model_ for monitoring. In this model, the monitoring server knows about the application instances and pulls metrics from them. In the _push model_, the application knows where the monitoring server is and sends metrics there.
+
+Our example application exposes metrics about itself on the `/metrics` path. It does not care who or what requests them.
+
+Audience discussion:
+
+* name a push based monitoring system
+* what are the trade-offs between the two models?
+
+### Counters
+
+Prometheus uses _counters_ as the primary metric wherever possible. Other metrics, like request rates, are derived from that at a later time.
+
+Look for the metric `codelab_api_request_duration_seconds_count{method="GET",path="/",status="200"}` on the metric page. In a separate tab, reload the index page a few times, then reload the metrics page and watch how the request count increases.
+
+Audience discussion:
+
+* What are the benefits of recording counts instead of request rates? (Hint: if a request happens while noone is measuring, did the request really happen?)
+* What happens if the application restarts?
+
+### Label-value metrics model
+
+In Prometheus, all metrics have a _name_ and 0 or more _label-value-pairs_. In the metric above, the name is `codelab_api_request_duration_seconds_count`, and the labels are `method`, `path` and `status`. Additional metrics will be added by the Prometheus server when scraping, such as the address of the instance the metric was read from.
+
+Run
+
+    git checkout part02
+
+to continue.
