@@ -34,6 +34,13 @@ services:
     - "/var/lib/docker/:/var/lib/docker:ro"
     networks:
     - ws
+  grafana:
+    image: grafana/grafana:3.0.4
+    restart: always
+    ports:
+    - 3000:3000
+    networks:
+    - ws
 
 networks:
   ws:
