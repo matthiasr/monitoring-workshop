@@ -349,3 +349,57 @@ Run
     git checkout part06
 
 to continue.
+
+## Part 6: Alert rules
+
+Monitoring is more than alerting, but alerting is usually a consequence of monitoring. Prometheus allows you to write _alert rules_ to indicate a "bad" condition.
+
+A basic alert rule is of the form
+
+    ALERT <name>
+      IF <expression>
+
+Earlier, we used _filtering_ expressions like `>` and `<`. These are typically used to mark alert conditions. An alert is considered _firing_ if its expression has returned data in every evaluation over the last _time_ interval. If the expression returns time series with labels, each label combination becomes another instance of the same alert. This allows writing very concise alert metrics that cover many cases at once. 
+
+For example, using the expression for relative error rates from earlier, we can alert on any endpoint having more than 10% errors:
+
+    ALERT EndpointHighErrorRate
+      IF (
+            sum(rate(codelab_api_request_duration_seconds_count{status=~"5.."}[15s])) BY (job, status, method, path)
+          /ON(job, method, path)
+            (sum(rate(codelab_api_request_duration_seconds_count[15s])) BY (job, method, path))
+          ) > 0.1
+
+Check out the git tag for this part to see [a more complete example](config/app.rules) of this rule. Reload Prometheus with
+
+    docker-compose kill -s HUP prometheus
+
+and check out the Alerts page to see your alert. For our example app, this alert will fire every few minutes.
+
+![Example alerts in Prometheus](img/alerts_prometheus.png)
+
+Now formulate alert rules for latency (99th percentile) and CPU utilisation.
+
+To test the latency alert, restart the app with
+
+    docker-compose restart app
+
+and it will have a higher latency for a while.
+
+### Three levels of bad
+
+[Canonically](https://docs.google.com/document/d/199PqyG3UsyXlwieHaqbGiWVa8eMWi8zzAn0YfcApr8Q/edit) there are three levels of severity for any given alert:
+
+* _critical_ alerts (pages) require immediate attention from a human to avoid or mitigate a real user impact.
+* _warning_ alerts (tickets) require attention from a human, but it can wait until the next business day or so.
+* _info_ alerts require no attention. They mark an out-of-the-ordinary condition that in itself does not indicate a problem, but may help a human localize a problem.
+
+Alerts (especially of the crtitical variety) should indicate a _user facing_ problem (who the user is depends on the context – it may be other teams in your organization). For example, _high load_ is not a page-worthy condition – as long as your service is still performing to the expectations of its users. However, when investigating increased latency, knowing that there is also high load may be valuable.
+
+What should the severity of your latency and CPU utilisation alerts be?
+
+Run
+
+    git checkout part07
+
+to continue.
