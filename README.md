@@ -294,6 +294,8 @@ Legend: show
 
 Display: Lines, fill 10, width 0; null as zero; series specific override: "max" -> lines, fill 0, width 1.
 
+![Finished dashboard](img/dashboard.png)
+
 ## Part 5: Recording rules
 
 Save the whole dashboard and reload it. You will notice that loading the graphs is quite slow – the more slow, the more we scale up the application. At the moment, all computation is done on-the-fly whenever a query is executed. This is somewhat computationally expensive, but more importantly it often requires loading dozens or hundreds of timeseries to distill a much smaller result. Recording rules are Prometheus' solution to this problem.
@@ -338,6 +340,8 @@ Check out the git tag for this part to see [a more complete example](config/app.
 
 and check out the Alerts page to see your alert. For our example app, this alert will fire every few minutes.
 
+![Example alerts in Prometheus](img/alerts_prometheus.png)
+
 Now formulate alert rules for latency (99th percentile) and CPU utilisation.
 
 To test the latency alert, restart the app with
@@ -365,3 +369,5 @@ Alerts are useless unless they are being sent out. For Prometheus, this is handl
     docker-compose up -d
 
 You can reach Alertmanager at port 9093 of your Docker IP. If your alerts are currently firing, they will show up on the Alerts page.
+
+![Example alerts in Alertmanager](img/alerts_alertmanager.png)
