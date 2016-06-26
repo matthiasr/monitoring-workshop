@@ -53,15 +53,6 @@ services:
     - 9093:9093
     networks:
     - ws
-  mail:
-    image: catatnight/postfix:latest
-    environment:
-      maildomain: example.org
-      smtp_user: alertmanager:alertmanager
-    ports:
-    - 25
-    networks:
-    - ws
 
 networks:
   ws:
