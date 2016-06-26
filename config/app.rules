@@ -1,0 +1,1 @@
+job_method_path:codelab_api_request_duration_seconds_count:rate = sum by (job, method,path) (rate(codelab_api_request_duration_seconds_count[15s]))

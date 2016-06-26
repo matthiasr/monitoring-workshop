@@ -9,6 +9,11 @@ global:
   external_labels:
       monitor: 'codelab-monitor'
 
+# Load and evaluate rules in this file every 'evaluation_interval' seconds.
+rule_files:
+  - "/etc/prometheus/app.rules"
+  - "/etc/prometheus/your.rules"
+
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
 scrape_configs:
