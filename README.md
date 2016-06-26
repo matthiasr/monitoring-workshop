@@ -435,3 +435,18 @@ Run
     git checkout part08
 
 to continue.
+
+## Part 8: Blackbox probing
+
+So far, we only looked at _whitebox monitoring_, using metrics the application itself or its runtime provides. This allows for a great level of detail and monitors real user traffic, not only the one endpoint that is being probed. However, whitebox monitoring alone cannot tell us whether a service _actually works_.
+
+This is where blackbox probing comes in. For Prometheus, it is provided by the [blackbox exporter](https://github.com/prometheus/blackbox_exporter). To start it, check out the code for this chapter, update our test infrastructure, and reload Prometheus:
+
+    docker-compose up -d
+    docker-compose kill -s HUP prometheus
+
+The [configuration](config/prometheus.yml) for this is somewhat involved – it discovers a list of targets using the normal service discovery mechanism, but then rewrites the metric request into one that queries the blackbox prober instead.
+
+Explore the new `prober_*` metrics in the Prometheus web interface (port 9090). Write an alert rule for failed probes.
+
+This is it, you've reached the end of the workshop!
