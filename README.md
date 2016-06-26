@@ -336,13 +336,13 @@ After checking out the code for this part, reload Prometheus:
 
     docker-compose kill -s HUP prometheus
 
-As you can see in [the config directory](config/) we have added a _rules file_ to the configuration. The file already contains rules to pre-calculate the traffic dashboard panel.
+As you can see in [the config directory](config/) we have added a [rules file](config/app.rules) to the configuration. The file already contains rules to pre-calculate the traffic dashboard panel.
 
 By convention, the name of the recorded metric (the left hand side of the rule) has the form `<preserved labels>:<original metric>:<calculations performed>`. Also by convention, we preserve _at least_ the job label. This avoids some ambiguities in complexer environments. Both conventions are just that – the name of the metric is arbitrary (within Prometheus' limits for metric names). Labels of the result of the right hand side become labels of the recorded time series.
 
 Change the traffic panel to use this metric by replacing the previous query with `job_method_path:codelab_api_request_duration_seconds_count:rate`. Note that it now loads much faster, but the data only starts at the time when we loaded the metric.
 
-Now, create recording rules for all the other dashboard metrics. Add them to [the rules file](config/app.rules) and reload Prometheus. Then change the dashboard to only use these rules.
+Now, create recording rules for all the other dashboard metrics. Add them to [the empty rules file](config/your.rules) and reload Prometheus. Then change the dashboard to only use these rules. _Note_ do not edit app.rules to avoid git conflicts later.
 
 Run
 
