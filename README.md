@@ -420,11 +420,7 @@ Silencing alerts is essential to keeping alert noise low. Alertmanager silences 
 
 Click the "Silence" button on any alert to see all the labels of this alert pre-filled. Remove labels until all alerts of the same type are being silenced.
 
-![Adding a silence for a specific alert class](img/silence_alertname.png)
-
 Add another silence for all alerts related to `/api/foo`.
-
-![Adding a silence for all alerts about a specific path](img/silence_endpoint.png)
 
 ### Add your own receiver
 
