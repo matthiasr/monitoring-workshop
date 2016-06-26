@@ -9,6 +9,12 @@ services:
     - ws
   prometheus:
     image: prom/prometheus:0.20.0
+    command:
+    - "-config.file=/etc/prometheus/prometheus.yml"
+    - "-storage.local.path=/prometheus"
+    - "-web.console.libraries=/etc/prometheus/console_libraries"
+    - "-web.console.templates=/etc/prometheus/consoles"
+    - "-alertmanager.url=http://alertmanager:9093"
     ports:
     - '9090:9090'
     volumes:
@@ -37,11 +43,23 @@ services:
     - ws
   alertmanager:
     image: prom/alertmanager:0.2.1
+    command:
+    - "-config.file=/etc/alertmanager/alertmanager.yml"
+    - "-storage.path=/alertmanager"
     volumes:
     - './data/alertmanager:/alertmanager'
-    - './config/alertmanager.yml:/etc/alertmanager/config.yml'
+    - './config:/etc/alertmanager'
     ports:
     - 9093:9093
+    networks:
+    - ws
+  mail:
+    image: catatnight/postfix:latest
+    environment:
+      maildomain: example.org
+      smtp_user: alertmanager:alertmanager
+    ports:
+    - 25
     networks:
     - ws
 
