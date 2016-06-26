@@ -23,6 +23,12 @@ To save time and the conference WiFi, please ensure that you have [Docker](https
 
 from this repository. This will print your Docker version and pull a few images that we will need during the workshop.
 
+Run
+
+    git checkout part01
+
+to continue.
+
 ## Part 1: An App
 
 The [example application](example_golang/) is a Go application that simulates a web service. It opens an HTTP port with a simple API. It also generates load against this API by sending additional requests.
@@ -67,6 +73,12 @@ Audience discussion:
 ### Label-value metrics model
 
 In Prometheus, all metrics have a _name_ and 0 or more _label-value-pairs_. In the metric above, the name is `codelab_api_request_duration_seconds_count`, and the labels are `method`, `path` and `status`. Additional metrics will be added by the Prometheus server when scraping, such as the address of the instance the metric was read from.
+
+Run
+
+    git checkout part02
+
+to continue.
 
 ## Part 2: Prometheus
 
@@ -179,6 +191,12 @@ Scale up the app with
 
 and repeat the queries from above. What is different about the results? Which queries do you need to change to capture the whole app, and how?
 
+Run
+
+    git checkout part03
+
+to continue.
+
 ## Part 3: cAdvisor
 
 Not all the information about our app can be obtained from the app itself. cAdvisor collects information about the containers on a machine. Once again, check out the tag for this part and update our installation by executing
@@ -198,6 +216,12 @@ Explore the metrics cAdvisor provides at <http://${ip}:${port}/metrics> or using
 * What is the theoretical maximum a container can use on a given machine?
 
 cAdvisor is an example for [exporters](https://prometheus.io/docs/instrumenting/exporters/). Exporters are simple services that obtain metrics from systems that are not natively instrumented for Prometheus and expose them in the Prometheus exposition format.
+
+Run
+
+    git checkout part04
+
+to continue.
 
 ## Part 4: Grafana
 
@@ -296,6 +320,12 @@ Display: Lines, fill 10, width 0; null as zero; series specific override: "max" 
 
 ![Finished dashboard](img/dashboard.png)
 
+Run
+
+    git checkout part05
+
+to continue.
+
 ## Part 5: Recording rules
 
 Save the whole dashboard and reload it. You will notice that loading the graphs is quite slow – the more slow, the more we scale up the application. At the moment, all computation is done on-the-fly whenever a query is executed. This is somewhat computationally expensive, but more importantly it often requires loading dozens or hundreds of timeseries to distill a much smaller result. Recording rules are Prometheus' solution to this problem.
@@ -313,6 +343,12 @@ By convention, the name of the recorded metric (the left hand side of the rule) 
 Change the traffic panel to use this metric by replacing the previous query with `job_method_path:codelab_api_request_duration_seconds_count:rate`. Note that it now loads much faster, but the data only starts at the time when we loaded the metric.
 
 Now, create recording rules for all the other dashboard metrics. Add them to [the rules file](config/app.rules) and reload Prometheus. Then change the dashboard to only use these rules.
+
+Run
+
+    git checkout part06
+
+to continue.
 
 ## Part 6: Alert rules
 
@@ -362,6 +398,12 @@ Alerts (especially of the crtitical variety) should indicate a _user facing_ pro
 
 What should the severity of your latency and CPU utilisation alerts be?
 
+Run
+
+    git checkout part07
+
+to continue.
+
 ## Part 7: Alertmanager
 
 Alerts are useless unless they are being sent out. For Prometheus, this is handled by a separate process, the _Alertmanager_. It groups and bundles alerts, handles silencing, and routes the alert based on its labels to one or more receivers. Check out the tag for this chapter and start Alertmanager with
@@ -387,6 +429,12 @@ Add another silence for all alerts related to `/api/foo`.
 ### Add your own receiver
 
 Edit [the Alertmanager configuration](config/alertmanager.yml) to add your own receiver and route alerts to it. See [the Alertmanager documentation](https://prometheus.io/docs/alerting/configuration/) for details.
+
+Run
+
+    git checkout part08
+
+to continue.
 
 ## Part 8: Blackbox probing
 
