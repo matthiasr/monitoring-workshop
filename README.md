@@ -371,3 +371,15 @@ Alerts are useless unless they are being sent out. For Prometheus, this is handl
 You can reach Alertmanager at port 9093 of your Docker IP. If your alerts are currently firing, they will show up on the Alerts page.
 
 ![Example alerts in Alertmanager](img/alerts_alertmanager.png)
+
+### Silencing
+
+Silencing alerts is essential to keeping alert noise low. Alertmanager silences by label combination. Silences act like filters on alerts: any alert that matches a current silence will be shown on the Alertmanager interface, but no notifications about it will be sent out.
+
+Click the "Silence" button on any alert to see all the labels of this alert pre-filled. Remove labels until all alerts of the same type are being silenced.
+
+Add another silence for all alerts related to `/api/foo`.
+
+### Add your own receiver
+
+Edit [the Alertmanager configuration](config/alertmanager.yml) to add your own receiver and route alerts to it. See [the Alertmanager documentation](https://prometheus.io/docs/alerting/configuration/) for details.
