@@ -191,6 +191,14 @@ Scale up the app with
 
 and repeat the queries from above. What is different about the results? Which queries do you need to change to capture the whole app, and how?
 
+### Service discovery
+
+When you reload the status page after scaling up the app (it may take a few seconds to pick up the change) you will see that it now has more targets for the "app" job. This is because the app job automatically discovers all the instances of the app through _service discovery_. In this example, we use the DNS SD mechanism, but there are many more. See the [configuration docs](https://prometheus.io/docs/operating/configuration/) for more details.
+
+This is the main interface between Prometheus and the peculiarities of your infrastructure. In general, whatever mechanism you have to find all your instances can be used here. For mechanisms that are not natively supported, you can write out target lists using the `file_sd_config` mechanism.
+
+Service discovery can add additional labels to the metrics collected from each target, depending on the details of the mechanism. For example, in the Kubernetes discovery, it is possible to carry some or all of the service or pod labels from Kubernetes into Prometheus.
+
 Run
 
     git checkout part03
