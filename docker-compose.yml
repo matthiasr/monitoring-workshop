@@ -22,6 +22,18 @@ services:
     - './data/prometheus:/prometheus'
     networks:
     - ws
+  cadvisor:
+    image: google/cadvisor:v0.23.2
+    privileged: true
+    ports:
+    - 8080
+    volumes:
+    - "/:/rootfs:ro"
+    - "/var/run:/var/run:rw"
+    - "/sys:/sys:ro"
+    - "/var/lib/docker/:/var/lib/docker:ro"
+    networks:
+    - ws
 
 networks:
   ws:

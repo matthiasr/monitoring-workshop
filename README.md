@@ -196,3 +196,29 @@ Run
     git checkout part03
 
 to continue.
+
+## Part 3: cAdvisor
+
+Not all the information about our app can be obtained from the app itself. cAdvisor collects information about the containers on a machine. Once again, check out the tag for this part and update our installation by executing
+
+    docker-compose up -d
+
+Also reload the Prometheus configuration:
+
+    docker-compose kill -s HUP prometheus
+
+Find out the port cAdvisor is exposed on using `docker ps` like with the [app](#part-1-an-app) earlier.
+
+Explore the metrics cAdvisor provides at <http://${ip}:${port}/metrics> or using the Prometheus query interface. For the purposes of this workshop, focus on the CPU utilization metrics.
+
+* Which metric captures the CPU usage of a container?
+* What does the number tell us? How do you transform it into the current utilisation?
+* What is the theoretical maximum a container can use on a given machine?
+
+cAdvisor is an example for [exporters](https://prometheus.io/docs/instrumenting/exporters/). Exporters are simple services that obtain metrics from systems that are not natively instrumented for Prometheus and expose them in the Prometheus exposition format.
+
+Run
+
+    git checkout part04
+
+to continue.
