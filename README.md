@@ -400,3 +400,5 @@ This is where blackbox probing comes in. For Prometheus, it is provided by the [
 The [configuration](config/prometheus.yml) for this is somewhat involved – it discovers a list of targets using the normal service discovery mechanism, but then rewrites the metric request into one that queries the blackbox prober instead.
 
 Explore the new `prober_*` metrics in the Prometheus web interface (port 9090). Write an alert rule for failed probes.
+
+## The End!
