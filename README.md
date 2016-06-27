@@ -265,17 +265,68 @@ The first of the Golden Signals is _latency_ – how long does it take to do wha
 
 In the first row, create a panel to show the median, 90th and 99th percentile of the overall latency of our example application. Use the queries from before.
 
+##### Solution
+
+Metrics:
+
+1. `histogram_quantile(0.99, sum(codelab_api_request_duration_seconds_bucket) BY (le))`, legend format: `99th percentile`
+2. `histogram_quantile(0.9, sum(codelab_api_request_duration_seconds_bucket) BY (le))`, legend format: `90th percentile`
+3. `histogram_quantile(0.5, sum(codelab_api_request_duration_seconds_bucket) BY (le))`, legend format: `median`
+
+Axes: left Y: Unit seconds, linear.
+
+Legend: show.
+
+Display: Lines, fill 10, width 0; null value: null; not stacked.
+
 #### Traffic
 
 The next Golden Signal is _traffic_. Also in the first row, add a panel to show the applications request rate by method and endpoint as a stacked graph.
+
+##### Solution
+
+Metrics: `sum by (method,path) (rate(codelab_api_request_duration_seconds_count[15s]))`, legend format: `{{method}} {{path}}`
+
+Axes: left Y: Unit rps, linear
+
+Legend: show
+
+Display: Lines, fill 10, width 0; null value: null as zero; stacked.
 
 #### Errors
 
 The third Golden Signal is _errors_. Create a new row, and add a panel showing the _relative error rate in percent_ by method and endpoint. Any status code from 500 to 599 is considered an error.
 
+##### Solution
+
+Metrics: `sum by (status,method,path) (rate(codelab_api_request_duration_seconds_count{status=~"5.."}[15s])) / on(method,path) ( sum by (method,path) (rate(codelab_api_request_duration_seconds_count[15s])) )`, legend format: `{{method}} {{path}}`
+
+Axes: left Y: Unit Percent (0.0-1.0)
+
+Legend: show, max + current
+
+Display: Lines, Fill 10, Width 0, Null as zero, stack.
+
 #### Saturation
 
 The last Golden Signal is _saturation_ – how much of the available resources are used. Add another panel to the second row showing the _CPU utilization_ of each Docker Compose Service (`app`, `prometheus`, `cadvisor`, `grafana`. Also add a line for the _maximum_ utilization depending on the available resources.
+
+##### Solution
+
+Metrics:
+
+1. `sum by (com_docker_compose_service) (rate(container_cpu_usage_seconds_total{id!="/",id!="/docker"}[15s]))`, legend format: `{{com_docker_compose_service}}`
+2. `count (container_cpu_usage_seconds_total{id="/"}) - sum(rate(container_cpu_usage_seconds_total{id!="/",id!="/docker"}[15s]))`, legend format: `max`
+
+note that we subtract the total value of the first query from the number of cores – this allows us to stack the graphs and retain the constant max.
+
+Axes: Left Y: Unit percent (0.0-1.0)
+
+Legend: show
+
+Display: Lines, fill 10, width 0; null as zero; series specific override: "max" -> lines, fill 0, width 1.
+
+![Finished dashboard](img/dashboard.png)
 
 Run
 
